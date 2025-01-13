@@ -4,7 +4,9 @@
 #ENTRYPOINT ["java","-jar","/app.jar"]
 
 # Use a base Java image
-FROM adoptopenjdk/openjdk17:latest
+#FROM adoptopenjdk/openjdk17:latest
+#FROM openjdk:17-jdk-alpine
+FROM eclipse-temurin:17-jre-alpine
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
@@ -19,4 +21,4 @@ EXPOSE 8080
 
 # Command to run the Java application
 #CMD ["java", "-jar", "my-java-app.jar"]
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
