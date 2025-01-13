@@ -1,29 +1,45 @@
+# ==============================
+# Build Stage
+# ==============================
 # 1. 빌드 스테이지
-FROM gradle:7.6.1-jdk17-alpine AS builder
+FROM gradle:7.6.1-jdk17 AS builder
 
-WORKDIR /build
+# 작업 디렉토리 설정
+WORKDIR /home/gradle/project
 
-# 그래들 파일들 복사
-COPY build.gradle settings.gradle /build/
-COPY gradle /build/gradle
+# gradlew 파일과 gradle 디렉토리 복사
+COPY gradlew .
+COPY gradle gradle
 
-# 소스 복사
-COPY src /build/src
+# 프로젝트 메타데이터 파일 복사
+COPY build.gradle settings.gradle ./
 
-# 권한 부여
+# 필요한 경우 기타 설정 파일 복사 (예: .gitignore 등)
+# COPY other-files .
+
+# gradlew 실행 권한 부여
 RUN chmod +x ./gradlew
 
-# 빌드 실행
-RUN gradle build -x test --no-daemon
+# 소스 코드 복사
+COPY src src
 
+# Gradle 빌드 (테스트 제외) - JAR 파일 생성
+RUN ./gradlew build --no-daemon -x test
+
+# ==============================
+# Runtime Stage
+# ==============================
 # 2. 실행 스테이지
 FROM eclipse-temurin:17-jre-alpine
 
-# 빌드된 jar 파일을 실행 스테이지로 복사
-COPY --from=builder /build/build/libs/*.jar app.jar
+# 작업 디렉토리 설정
+WORKDIR /app
 
-# 컨테이너 실행시 실행될 명령어
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+# 빌드 스테이지에서 생성된 JAR 파일 복사
+COPY --from=builder /home/gradle/project/build/libs/*.jar app.jar
 
-# 컨테이너 포트 설정
+# 애플리케이션 포트 노출
 EXPOSE 8080
+
+# 애플리케이션 실행
+ENTRYPOINT ["java", "-jar", "app.jar"]
