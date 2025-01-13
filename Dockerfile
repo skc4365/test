@@ -5,8 +5,8 @@
 
 # Use a base Java image
 #FROM adoptopenjdk/openjdk17:latest
-#FROM openjdk:17-jdk-alpine
-FROM eclipse-temurin:17-jre-alpine
+FROM openjdk:17-jdk-alpine
+#FROM eclipse-temurin:17-jre-alpine
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
