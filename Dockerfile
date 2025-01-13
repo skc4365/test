@@ -14,9 +14,9 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /usr/src/app
 
 # Copy the Java application JAR file into the container
-COPY target/test-0.0.1-SNAPSHOT.jar .
-#ARG JAR_FILE=target/*.jar
-#COPY ${JAR_FILE} app.jar
+#COPY target/test-0.0.1-SNAPSHOT.jar .
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
 
 # Expose the port on which your Java application runs (if applicable)
 EXPOSE 8080
